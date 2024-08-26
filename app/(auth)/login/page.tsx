@@ -5,6 +5,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { baseUrl } from "@/lib/config";
 
 export default function Login() {
   const [data, setData] = useState({
@@ -23,7 +24,7 @@ export default function Login() {
 
   const login: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    const api = await fetch("/api/login", {
+    const api = await fetch(`${baseUrl}/api/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

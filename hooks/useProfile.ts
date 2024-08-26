@@ -1,4 +1,5 @@
 "use client";
+import { baseUrl } from "@/lib/config";
 import { useEffect, useState } from "react";
 
 type User = {
@@ -11,7 +12,7 @@ export const useGetProfile = () => {
   const [isLogin, setIsLogin] = useState<boolean>(false);
   useEffect(() => {
     const getUser = async () => {
-      const res = await fetch("/api/user");
+      const res = await fetch(`${baseUrl}/api/user`);
       const response = await res.json();
       setUser({ name: response?.user?.name, usn: response?.user?.usn });
       setIsLogin(true);

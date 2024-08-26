@@ -1,4 +1,5 @@
 // app/profile/layout.tsx
+import { baseUrl } from "@/lib/config";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 async function getUser() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`);
+  const res = await fetch(`${baseUrl}/api/user`);
 
   if (!res.ok) {
     return null;
