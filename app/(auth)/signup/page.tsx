@@ -6,11 +6,13 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { baseUrl } from "@/lib/config";
+import { useRouter } from "next/navigation";
 
 export default function SignUp() {
+  const { push } = useRouter();
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const [data, setData] = useState({
     name: "",
-    username: "",
     email: "",
     password: "",
   });
@@ -34,6 +36,14 @@ export default function SignUp() {
       body: JSON.stringify(data),
     });
     const response = await api.json();
+
+    if (api.status === 201 || api.ok) {
+      push("/");
+    } else if (api.status === 403) {
+      setErrorMessage(response?.message);
+    } else {
+      window.alert("Error | Something went wrong");
+    }
   };
 
   return (
@@ -47,6 +57,9 @@ export default function SignUp() {
       <form onSubmit={register}>
         <Card>
           <CardContent className="space-y-4 pt-6">
+            {errorMessage && (
+              <p className="text-sm text-center text-red-500">{errorMessage}</p>
+            )}
             <div className="grid gap-2">
               <Label htmlFor="name">Name</Label>
               <Input
@@ -56,18 +69,6 @@ export default function SignUp() {
                 value={data.name}
                 type="text"
                 placeholder="Enter your name"
-                required
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="name">Username</Label>
-              <Input
-                id="username"
-                name="username"
-                onChange={changeInputValue}
-                value={data.username}
-                type="text"
-                placeholder="Enter your username"
                 required
               />
             </div>

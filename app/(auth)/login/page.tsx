@@ -6,8 +6,11 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { baseUrl } from "@/lib/config";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
+  const { push } = useRouter();
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -32,6 +35,16 @@ export default function Login() {
       body: JSON.stringify(data),
     });
     const response = await api.json();
+
+    if (api.status === 200 || api.ok) {
+      push("/");
+    } else if (api.status === 403) {
+      setErrorMessage(response?.message);
+    } else if (api.status === 401) {
+      setErrorMessage(response?.message);
+    } else {
+      window.alert("Error | Something went wrong");
+    }
   };
 
   return (
@@ -45,6 +58,9 @@ export default function Login() {
       <form onSubmit={login}>
         <Card>
           <CardContent className="space-y-4 pt-6">
+            {errorMessage && (
+              <p className="text-sm text-center text-red-500">{errorMessage}</p>
+            )}
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input

@@ -1,7 +1,7 @@
-// app/profile/layout.tsx
-import { baseUrl } from "@/lib/config";
 import { Metadata } from "next";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { baseUrl } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: `Profile`,
@@ -9,15 +9,25 @@ export const metadata: Metadata = {
     "Manage your profile, update your information, and showcase your best moments on our social media platforms.",
 };
 
-async function getUser() {
-  const res = await fetch(`${baseUrl}/api/user`);
+async function getUserData() {
+  const token = cookies().get("crsftoken")?.value;
+
+  if (!token) {
+    return null;
+  }
+
+  const res = await fetch(`${baseUrl}/api/protected`, {
+    headers: {
+      Cookie: `crsftoken=${token}`,
+    },
+  });
 
   if (!res.ok) {
     return null;
   }
 
   const data = await res.json();
-  return data.user;
+  return data;
 }
 
 export default async function ProfileLayout({
@@ -25,9 +35,9 @@ export default async function ProfileLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const user = await getUser();
+  const data = await getUserData();
 
-  if (!user) {
+  if (!data?.user) {
     redirect("/login");
     return null;
   }
