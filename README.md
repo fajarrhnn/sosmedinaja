@@ -16,11 +16,11 @@ If you want to see the SosmedInAja website, you can visit at [this page](https:/
 
 ### Accounts
 
-- User Authentication and Authorization. (under development)
+- User Authentication and Authorization. (done ✅)
 - Edit Profile. (soon)
 - Add photo as user avatar. (soon)
 
 ### User Action
 
-- Create a post with a picture and description. (soon)
+- Create a post with a picture and description. (under development)
 - Like, comment, and share posts. (soon)
