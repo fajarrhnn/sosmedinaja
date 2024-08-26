@@ -1,0 +1,67 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String    @id @default(cuid())
+  name      String
+  username  String?
+  email     String    @unique
+  password  String
+  avatar    String?
+  posts     Post[]    @relation("UserPosts")
+  likes     Like[]    @relation("UserLikes")
+  comments  Comment[] @relation("UserComments")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("users")
+}
+
+model Post {
+  id          String    @id @default(cuid())
+  description String?
+  imageUrl    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  authorId    String
+  author      User      @relation("UserPosts", fields: [authorId], references: [id])
+  countLikes  Int
+  likes       Like[]    @relation("PostLikes")
+  comments    Comment[] @relation("PostComments")
+
+  @@map("posts")
+}
+
+model Like {
+  id Int @id @default(autoincrement())
+
+  userId String
+  user   User   @relation("UserLikes", fields: [userId], references: [id])
+
+  postId String
+  post   Post   @relation("PostLikes", fields: [postId], references: [id])
+
+  @@unique([userId, postId])
+  @@map("likes")
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation("UserComments", fields: [userId], references: [id])
+
+  postId    String
+  post      Post     @relation("PostComments", fields: [postId], references: [id])
+  updatedAt DateTime @updatedAt
+
+  @@map("comments")
+}
